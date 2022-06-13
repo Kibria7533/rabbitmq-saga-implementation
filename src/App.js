@@ -2,6 +2,7 @@ import React from 'react';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
+import { USER_SERVICE ,ORDER_SERVICE,STOCK_SERVICE,PAYMENT_SERVICE} from './Url/Url';
 import './App.css';
 
 const githubLink = ""
@@ -24,26 +25,13 @@ function App() {
   const [productCode,setProductCode]= useState('');
   const [productPrice,setProductPrice] = useState('');
 
-
-  const handleamountChange = (e,ind) => {
- 
-  };
-
-  const insertNewRow=()=>{
-    
-  }
-
- 
-  const deleteEl=(ind)=>{
-    
-  }
   const DeleteOrder=async (ind)=>{
-    await axios.delete(`http://localhost:8000/delete/${ind}`).then(el=>{
+    await axios.delete(`${ORDER_SERVICE}/${ind}`).then(el=>{
       getOrders();
     })
   }
   const saveOrder= async (data)=>{
-       let res=await axios.post('http://localhost:8000/store',data,{headers: {'Accept': 'application/json',
+       let res=await axios.post(`${ORDER_SERVICE}/store`,data,{headers: {'Accept': 'application/json',
        'Content-Type': 'application/json'}});
        return res;
   }
@@ -59,7 +47,7 @@ function App() {
    
   };
 const getOrders=async()=>{
- await axios.get('http://localhost:8000/orders').then(dta=>{
+ await axios.get(`${ORDER_SERVICE}/orders`).then(dta=>{
   setOrderTable(dta.data);
  });
 }
@@ -72,32 +60,32 @@ getPayments();
 },[])
 const SaveUser=async()=>{
   let user={user_name:userName,user_code:userId};
-  await axios.post('http://localhost:8001/store',user,{headers: {'Accept': 'application/json',
+  await axios.post(`${USER_SERVICE}/store`,user,{headers: {'Accept': 'application/json',
   'Content-Type': 'application/json'}}).then((data)=>{
        console.log(data);
        getUsers();
   })
 }
 const getUsers=async()=>{
-  await axios.get('http://localhost:8001/users').then(dta=>{
+  await axios.get(`${USER_SERVICE}/users`).then(dta=>{
      setUserTable(dta.data.data.data);
  });
 }
 
 
 const DeleteUser=async(ind)=>{
-  await axios.delete(`http://localhost:8001/delete/${ind}`).then(el=>{
+  await axios.delete(`${USER_SERVICE}/delete/${ind}`).then(el=>{
     getUsers();
   })
 }
 const getProducts=async()=>{
-  await axios.get('http://localhost:8002/stocks').then(dta=>{
+  await axios.get(`${STOCK_SERVICE}/stocks`).then(dta=>{
  setProductTable(dta.data);
  });
 }
 const SaveProduct=async()=>{
   let user={product_name:productName,product_code:productCode,price:productPrice};
-  await axios.post('http://localhost:8002/store',user,{headers: {'Accept': 'application/json',
+  await axios.post(`${STOCK_SERVICE}/store`,user,{headers: {'Accept': 'application/json',
   'Content-Type': 'application/json'}}).then((data)=>{
        console.log(data);
        getProducts();
@@ -105,19 +93,19 @@ const SaveProduct=async()=>{
 }
 
 const DeleteProduct=async(ind)=>{
-  await axios.delete(`http://localhost:8002/delete/${ind}`).then(el=>{
+  await axios.delete(`${STOCK_SERVICE}/delete/${ind}`).then(el=>{
     getProducts();
   })
 }
 const getPayments=async()=>{
-  await axios.get('http://localhost:8003/payments').then(dta=>{
+  await axios.get(`${PAYMENT_SERVICE}/payments`).then(dta=>{
     console.log('payments',dta)
  setPaymentTable(dta.data);
  });
 }
 
 const DeletePayments=async(ind)=>{
-  await axios.delete(`http://localhost:8003/delete/${ind}`).then(el=>{
+  await axios.delete(`${PAYMENT_SERVICE}/delete/${ind}`).then(el=>{
     getPayments();
   })
 }
