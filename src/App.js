@@ -26,7 +26,7 @@ function App() {
   const [productPrice,setProductPrice] = useState('');
 
   const DeleteOrder=async (ind)=>{
-    await axios.delete(`${ORDER_SERVICE}/${ind}`).then(el=>{
+    await axios.delete(`${ORDER_SERVICE}/delete/${ind}`).then(el=>{
       getOrders();
     })
   }
