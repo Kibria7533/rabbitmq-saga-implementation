@@ -2,6 +2,7 @@ import React from 'react';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from 'react-bootstrap/Button';
+import Moment from 'react-moment';
 import { USER_SERVICE ,ORDER_SERVICE,STOCK_SERVICE,PAYMENT_SERVICE} from './Url/Url';
 import './App.css';
 
@@ -24,6 +25,14 @@ function App() {
   const [productName,setProductName]= useState('');
   const [productCode,setProductCode]= useState('');
   const [productPrice,setProductPrice] = useState('');
+  const calendarStrings = {
+    lastDay : '[Yesterday at] LT',
+    sameDay : '[Today at] LT',
+    nextDay : '[Tomorrow at] LT',
+    lastWeek : '[last] dddd [at] LT',
+    nextWeek : 'dddd [at] LT',
+    sameElse : 'L'
+};
 
   const DeleteOrder=async (ind)=>{
     await axios.delete(`${ORDER_SERVICE}/delete/${ind}`).then(el=>{
@@ -63,6 +72,9 @@ const SaveUser=async()=>{
   await axios.post(`${USER_SERVICE}/store`,user,{headers: {'Accept': 'application/json',
   'Content-Type': 'application/json'}}).then((data)=>{
        console.log(data);
+       setUserId('');
+       setUserName('');
+       setUserIdUser('');
        getUsers();
   })
 }
@@ -88,6 +100,11 @@ const SaveProduct=async()=>{
   await axios.post(`${STOCK_SERVICE}/store`,user,{headers: {'Accept': 'application/json',
   'Content-Type': 'application/json'}}).then((data)=>{
        console.log(data);
+       setProductId('');
+       setProductName('');
+       setProductPrice('');
+       setProductCode('');
+
        getProducts();
   })
 }
@@ -140,6 +157,7 @@ const DeletePayments=async(ind)=>{
               <th>Product ID</th>
               <th>Order Status</th>
               <th>Amount</th>
+              <th>Time</th>
               <th>Action</th>
             </tr>
             {orderTableData.length>0 && orderTableData.map((item,ind)=>{
@@ -153,6 +171,7 @@ const DeletePayments=async(ind)=>{
                 {item.order_status}
                 </td>
                 <td>{item.amount}</td>
+                <td><Moment calendar={calendarStrings} >{item.created_at}</Moment></td>
                 <td><button className="cell-button" onClick={()=>DeleteOrder(item.id)}>Delete</button></td>
               </tr>
               )
@@ -171,6 +190,7 @@ const DeletePayments=async(ind)=>{
             <th>Product Name</th>
               <th>Product ID</th>
               <th>Price</th>
+              <th>Time</th>
               <th>Action</th>
             </tr>
             {productTableData.length>0 && productTableData.map((item,ind)=>{
@@ -183,6 +203,7 @@ const DeletePayments=async(ind)=>{
                 <td>
                  {item.price}
                 </td>
+                <td><Moment calendar={calendarStrings} >{item.created_at}</Moment></td>
                 <td>
                  
                   <button className="cell-button cell-button" onClick={()=>DeleteProduct(item.id)}>Delete</button>
@@ -216,6 +237,7 @@ const DeletePayments=async(ind)=>{
             <tr>
               <th>User ID</th>
               <th>Amount</th>
+              <th>Time</th>
               <th>Action</th>
             </tr>
             {paymentTableData.length>0 && paymentTableData.map((item,ind)=>{
@@ -225,6 +247,7 @@ const DeletePayments=async(ind)=>{
                 <td>
                 {item.amount}
                 </td>
+                <td><Moment calendar={calendarStrings} >{item.created_at}</Moment></td>
                 <td>
                   <button className="cell-button" onClick={()=>DeletePayments(item.id)}>Delete</button>
                 </td>
@@ -244,6 +267,7 @@ const DeletePayments=async(ind)=>{
             <tr>
               <th>User Name</th>
               <th>User ID</th>
+              <th>Time</th>
               <th>Action</th>
             </tr>
             {userTableData.length>0 && userTableData.map((item,ind)=>{
@@ -253,8 +277,9 @@ const DeletePayments=async(ind)=>{
                 <td>
                  {item.user_code}
                 </td>
+                <td><Moment calendar={calendarStrings} >{item.created_at}</Moment></td>
                 <td>
-                  <button className="cell-button" onClick={()=>DeleteUser(ind)}>Delete</button>
+                  <button className="cell-button" onClick={()=>DeleteUser(item.id)}>Delete</button>
                 </td>
               </tr>
               )
